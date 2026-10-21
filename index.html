@@ -31,6 +31,7 @@ button:hover,#hint:hover{filter:brightness(1.2)}
 .card.used{opacity:.25;pointer-events:none}
 #msg{min-height:26px;color:var(--acc)}
 a.go{display:inline-block;color:#fff;border:12px solid transparent;border-image:var(--panel) 6 fill/12px stretch;image-rendering:pixelated;padding:0 8px;text-decoration:none;margin-top:10px;text-shadow:2px 2px 0 #3a2410}
+#mute{position:absolute;top:8px;right:8px;margin:0;padding:0 2px;z-index:5;line-height:1.3;font-size:20px}
 </style>
 </head>
 <body>
@@ -47,11 +48,15 @@ a.go{display:inline-block;color:#fff;border:12px solid transparent;border-image:
     <div id="end"></div>
     <button id="close">Voltar</button>
   </div>
+  <button id="mute" tabindex="-1" aria-label="Desligar música"></button>
 </div>
 <script>
 /* ===== CONFIGURAÇÃO ===== */
 const YT_URL = "https://www.youtube.com/watch?v=J4UsLa3jPyc"; 
 const S = 3; // escala dos sprites (pixel art).
+const MUSIC_FILE = "musica.mp3"; // arquivo de música (na mesma pasta do index.html)
+const MUSIC_START = 7;           // segundos: pula a introdução (também vale na volta do loop)
+const MUSIC_VOL = 0.3;           // 0 a 1 (a faixa já é bem alta, 0.3 fica como fundo)
 
 /* ===== MUNDO ===== */
 const W=3000,H=2000, PLAZA={x:1500,y:1000,r:140};
@@ -101,7 +106,7 @@ Object.keys(ASSETS).forEach(k=>{
     if(k==="player"){FR.player={};PDIR.forEach((d,r)=>{FR.player[d]=[];for(let c=0;c<9;c++)FR.player[d].push(sliceC(im,2+23*c,2+36*r,21,34));});}
     else if(k==="water"){WP=[0,1,2,3].map(f=>ctx.createPattern(scaleC(sliceC(im,96*f+16,128,16,16),S),"repeat"));}
     else if(k==="grass"){GP=ctx.createPattern(scaleC(sliceC(im,48,0,48,48),S),"repeat");SP=ctx.createPattern(scaleC(sliceC(im,96,16,16,16),S),"repeat");}
-    else{const f=[];for(let i=0;i<a.n;i++)f.push(sliceC(im,i*a.fw,0,a.fw,a.fh));FR[k]=f;FR[k+"Foot"]=a.foot||footOf(f[0]);}
+    else{const f=[];for(let i=0;i<a.n;i++)f.push(sliceC(im,i*a.fw,0,a.fw,a.fh));FR[k]=f;FR[k+"Foot"]=a.foot||footOf(f[0]);if(k==="cat")f[4].getContext("2d").clearRect(0,16,1,1);}
   };
   im.src=a.src;
 });
@@ -201,9 +206,72 @@ function check(){
 }
 document.getElementById("close").onclick=()=>puz.style.display="none";
 
+/* ===== MÚSICA ===== */
+const bgm=new Audio(MUSIC_FILE);bgm.preload="auto";bgm.volume=MUSIC_VOL;
+let musicOn=true,musicStarted=false;
+function seekStart(){try{if(bgm.currentTime<MUSIC_START)bgm.currentTime=MUSIC_START;}catch(e){}}
+bgm.addEventListener("loadedmetadata",seekStart);
+bgm.addEventListener("playing",seekStart);
+bgm.addEventListener("ended",()=>{try{bgm.currentTime=MUSIC_START;}catch(e){}if(musicOn)bgm.play().catch(()=>{});}); // loop sem repetir a introdução
+function startMusic(){ // navegadores só liberam áudio depois do primeiro toque/tecla
+  if(musicStarted)return;musicStarted=true;seekStart();
+  if(musicOn)bgm.play().catch(()=>{musicStarted=false;}); // se recusar, tenta de novo no próximo toque
+}
+["pointerdown","keydown","touchstart"].forEach(ev=>addEventListener(ev,startMusic,{passive:true}));
+document.addEventListener("visibilitychange",()=>{
+  if(document.hidden)bgm.pause();
+  else if(musicOn&&musicStarted)bgm.play().catch(()=>{});
+});
+const muteBtn=document.getElementById("mute");
+function renderMute(){muteBtn.textContent=musicOn?"🔊":"🔇";muteBtn.setAttribute("aria-label",musicOn?"Desligar música":"Ligar música");}
+muteBtn.onclick=()=>{
+  musicOn=!musicOn;renderMute();
+  if(musicOn){musicStarted=true;seekStart();bgm.play().catch(()=>{});}else bgm.pause();
+  muteBtn.blur(); // evita que Espaço/Enter acione o botão sem querer
+};
+renderMute();
+
 /* ===== LOOP ===== */
 const DIRS={"0,-1":"N","1,-1":"NE","1,0":"E","1,1":"SE","0,1":"S","-1,1":"SW","-1,0":"W","-1,-1":"NW"};
-function inLake(x,y){const dx=(x-LAKE.x)/(LAKE.rx+14),dy=(y-LAKE.y)/(LAKE.ry+14);return dx*dx+dy*dy<1;}
+/* ===== LAGO: pixel art alinhada à grade dos sprites, sem antialiasing ===== */
+const LK_SAND=12, LK_LINE=3;   // largura da areia e do contorno (4 e 1 pixels de arte)
+const LK_PADX=18, LK_PADY=8;   // folga da colisão: o corpo da personagem não entra na água
+const LK={ax:0,ay:0,art:null,mask:null,flat:null,frames:null};
+function lakeIn(x,y,r){const dx=(x-LAKE.x)/(LAKE.rx+r),dy=(y-LAKE.y)/(LAKE.ry+r);return dx*dx+dy*dy<=1;}
+function inLake(x,y){const dx=(x-LAKE.x)/(LAKE.rx+LK_PADX),dy=(y-LAKE.y)/(LAKE.ry+LK_PADY);return dx*dx+dy*dy<1;}
+function buildLake(){
+  const m=LK_SAND+LK_LINE+S;
+  LK.ax=Math.floor((LAKE.x-LAKE.rx-m)/S);LK.ay=Math.floor((LAKE.y-LAKE.ry-m)/S);
+  const aw=Math.ceil((LAKE.x+LAKE.rx+m)/S)-LK.ax,ah=Math.ceil((LAKE.y+LAKE.ry+m)/S)-LK.ay;
+  const mk=()=>{const c=document.createElement("canvas");c.width=aw;c.height=ah;return c;};
+  LK.art=mk();LK.mask=mk();
+  const a=LK.art.getContext("2d"),w=LK.mask.getContext("2d");
+  const hash=(i,j)=>{let h=(Math.imul(i,374761393)+Math.imul(j,668265263))>>>0;h=Math.imul(h^(h>>>13),1274126177)>>>0;return (h^(h>>>16))>>>0;};
+  for(let j=0;j<ah;j++)for(let i=0;i<aw;i++){
+    const x=(LK.ax+i+.5)*S,y=(LK.ay+j+.5)*S;let col=null;
+    if(lakeIn(x,y,0)){
+      w.fillStyle="#000";w.fillRect(i,j,1,1);                 // máscara da água
+      if(!lakeIn(x,y,-S))col="#bfe8f5";                       // espuma na beirada
+    }else if(lakeIn(x,y,S))col="#c9a56e";                     // areia molhada
+    else if(lakeIn(x,y,LK_SAND)){const h=hash(i,j)%23;col=h===0?"#d4b27b":h===1?"#f0dba9":"#e4c993";} // areia
+    else if(lakeIn(x,y,LK_SAND+LK_LINE))col="#8e603a";        // contorno
+    if(col){a.fillStyle=col;a.fillRect(i,j,1,1);}
+  }
+}
+function composeLake(fill){
+  const c=document.createElement("canvas");c.width=LK.art.width*S;c.height=LK.art.height*S;
+  const g=c.getContext("2d");g.imageSmoothingEnabled=false;
+  g.save();g.translate(-LK.ax*S,-LK.ay*S);g.fillStyle=fill;g.fillRect(LK.ax*S,LK.ay*S,c.width,c.height);g.restore();
+  g.globalCompositeOperation="destination-in";g.drawImage(LK.mask,0,0,c.width,c.height);   // recorta só a água
+  g.globalCompositeOperation="source-over";g.drawImage(LK.art,0,0,c.width,c.height);       // areia, contorno e espuma por cima
+  return c;
+}
+function drawLake(){
+  if(!LK.art){buildLake();LK.flat=composeLake("#87c7df");}
+  if(!LK.frames&&WP.length===4)LK.frames=[0,1,2,3].map(f=>composeLake(WP[f]));   // quando a água animada carregar
+  const img=(LK.frames&&LK.frames[Math.floor(performance.now()/350)%4])||LK.flat;
+  ctx.imageSmoothingEnabled=false;ctx.drawImage(img,LK.ax*S,LK.ay*S);
+}
 let last=performance.now();
 function loop(t){
   const dt=Math.min(.05,(t-last)/1000);last=t;
@@ -239,10 +307,7 @@ function draw(){
   ctx.fillStyle=GP||"#81ba44";ctx.fillRect(Math.max(0,-ox),Math.max(0,-oy),vw+2,vh+2);
   ctx.strokeStyle="#1f4d1f";ctx.lineWidth=6;ctx.strokeRect(0,0,W,H);
   // lago
-  ctx.fillStyle="#986b41";ctx.beginPath();ctx.ellipse(LAKE.x,LAKE.y,LAKE.rx+14,LAKE.ry+14,0,0,7);ctx.fill();
-  ctx.fillStyle="#d7b588";ctx.beginPath();ctx.ellipse(LAKE.x,LAKE.y,LAKE.rx+9,LAKE.ry+9,0,0,7);ctx.fill();
-  ctx.save();ctx.beginPath();ctx.ellipse(LAKE.x,LAKE.y,LAKE.rx,LAKE.ry,0,0,7);ctx.clip();
-  ctx.fillStyle=WP[Math.floor(performance.now()/350)%4]||"#87c7df";ctx.fillRect(LAKE.x-LAKE.rx,LAKE.y-LAKE.ry,LAKE.rx*2,LAKE.ry*2);ctx.restore();
+  drawLake();
   // praça
   if(FR.plaza){const c=FR.plaza[0];ctx.imageSmoothingEnabled=false;ctx.drawImage(c,Math.round(PLAZA.x-55*S),Math.round(PLAZA.y-42*S),c.width*S,c.height*S);}
   // objetos ordenados por y
