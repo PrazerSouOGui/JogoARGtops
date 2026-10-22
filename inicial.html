@@ -95,8 +95,8 @@ body{margin:0;font-family:var(--hand);color:var(--chalk);overflow-x:hidden}
 
 /* ---------- gatos ---------- */
 .cats{gap:clamp(8px,3vw,30px);margin-bottom:-26px}
-.cat-orange{--fur:#f1a04b;--fur2:#d77f2a;--belly:#ffe2b6;--paw:#ffe9c9;--inear:#f7a9b8;--collar:#f06d8a;--ink-cat:#2b1b22}
-.cat-grey{--fur:#a9b4c6;--fur2:#8592a9;--belly:#f0f2f7;--paw:#fafbfd;--inear:#f7b3c1;--collar:#4fb3a9;--ink-cat:#2b1b22}
+.cat-snow{--body:#8c5832;--tail:#2c1a14;--head:#52342a;--mask:#271811;--white:#fbf6f0;--ear-out:#3b251c;--ear-in:#cdbca8;--iris:#9db5d3;--collar:#f06d8a;--lid:#f3e8da;--ink-cat:#2b1b22;--seam:#d9cec1;--rim:transparent}
+.cat-tux{--body:#27242c;--tail:#27242c;--head:#27242c;--white:#fbf6f0;--ear-out:#27242c;--ear-in:#4d3643;--iris:#cbc44d;--collar:#4fb3a9;--lid:#efe5c5;--ink-cat:#2b1b22;--seam:rgba(255,255,255,.13);--rim:rgba(255,255,255,.12)}
 .cat-btn{all:unset;box-sizing:border-box;position:relative;display:flex;flex-direction:column;align-items:center;width:var(--cat-w);cursor:pointer;-webkit-tap-highlight-color:transparent}
 .cat-art{display:block;width:100%;transform-origin:50% 100%;transition:transform .28s cubic-bezier(.3,1.6,.5,1)}
 .cat-btn:hover .cat-art,.cat-btn:focus-visible .cat-art{transform:translateY(-7px) rotate(-1.5deg)}
@@ -106,29 +106,31 @@ body{margin:0;font-family:var(--hand);color:var(--chalk);overflow-x:hidden}
 .tag{position:relative;z-index:2;margin-top:3px;padding:.3em 1.05em .3em 1.25em;border-radius:12px 999px 999px 12px;background:var(--paper);color:var(--ink);
   font:600 clamp(1rem,4.4vw,1.3rem)/1.1 var(--head);box-shadow:0 3px 0 rgba(0,0,0,.3);transform:rotate(-2deg)}
 .tag::before{content:"";position:absolute;left:.5em;top:50%;width:.4em;height:.4em;margin-top:-.2em;border-radius:50%;background:#3a2330;opacity:.55}
-.cat-grey .tag{transform:rotate(2deg)}
+.cat-tux .tag{transform:rotate(2deg)}
 .cat-btn:focus-visible .tag{outline:3px solid var(--amber);outline-offset:3px}
 .zzz{position:absolute;top:2%;right:6%;font:600 1.1rem var(--head);color:#cfe0ff;opacity:0;pointer-events:none}
 .napping .zzz{animation:zzz 1.8s ease-out}
 @keyframes zzz{0%{opacity:0;transform:translateY(8px)}25%{opacity:1}100%{opacity:0;transform:translate(10px,-26px)}}
 
 .cat{display:block;width:100%;height:auto;overflow:visible}
-.cat .fur{fill:var(--fur)} .cat .belly{fill:var(--belly)} .cat .inear{fill:var(--inear)} .cat .paw{fill:var(--paw)}
-.cat .tailp{stroke:var(--fur);fill:none}
-.cat .stripe{stroke:var(--fur2);fill:none;stroke-width:4;stroke-linecap:round}
-.cat-grey .stripe{display:none}
-.cat .seam{stroke:var(--fur2);fill:none;stroke-width:2.4;stroke-linecap:round;opacity:.55}
-.cat .line{stroke:var(--ink-cat);fill:none;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+.cat .body{fill:var(--body)} .cat .head{fill:var(--head)} .cat .mask{fill:var(--mask)} .cat .white{fill:var(--white)}
+.cat .ear-out{fill:var(--ear-out)} .cat .ear-in{fill:var(--ear-in)} .cat .iris{fill:var(--iris)}
+.cat .rim{stroke:var(--rim);stroke-width:2.5;stroke-linejoin:round}
+.cat .tailp{stroke:var(--tail);fill:none}
+.cat .seam{stroke:var(--seam);fill:none;stroke-width:2.4;stroke-linecap:round}
+.cat .toes{stroke:#cfc4b8;fill:none;stroke-width:2.2;stroke-linecap:round}
+.cat .line{stroke:var(--lid);fill:none;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+.cat .mouth{stroke:var(--ink-cat);fill:none;stroke-width:2.6;stroke-linecap:round}
 .cat .eye{fill:var(--ink-cat)}
-.cat .whisk{stroke:rgba(255,255,255,.78);stroke-width:2;stroke-linecap:round;fill:none}
+.cat .whisk{stroke:rgba(255,255,255,.85);stroke-width:2;stroke-linecap:round;fill:none}
 .cat .e-happy,.cat .e-sleep,.cat .e-squint{display:none}
 .cat.mood-happy .e-open,.cat.mood-sleep .e-open,.cat.mood-squint .e-open{display:none}
 .cat.mood-happy .e-happy,.cat.mood-sleep .e-sleep,.cat.mood-squint .e-squint{display:inline}
 .cat .e-open{transform-box:fill-box;transform-origin:center;animation:blink 5.2s infinite}
-.cat-grey .e-open{animation-delay:-2.4s}
+.cat-tux .e-open{animation-delay:-2.4s}
 @keyframes blink{0%,93%,100%{transform:scaleY(1)}96%{transform:scaleY(.08)}}
 .cat .tail{transform-origin:148px 204px;animation:wag 3.4s ease-in-out infinite}
-.cat-grey .tail{animation-delay:-1.6s}
+.cat-tux .tail{animation-delay:-1.6s}
 @keyframes wag{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(9deg)}}
 .cat .ear-l{transform-origin:72px 76px;animation:twL 7s infinite}
 .cat .ear-r{transform-origin:128px 76px;animation:twR 7s infinite .6s}
@@ -206,7 +208,7 @@ body{margin:0;font-family:var(--hand);color:var(--chalk);overflow-x:hidden}
   <div class="stage">
     <!-- passo 1: os gatinhos -->
     <div class="panel cats" id="step1">
-      <button class="cat-btn cat-orange" id="yes" type="button" aria-label="Sim">
+      <button class="cat-btn cat-snow" id="yes" type="button" aria-label="Sim">
         <span class="cat-art" data-cat></span>
         <span class="tag">Sim</span>
       </button>
@@ -220,7 +222,7 @@ body{margin:0;font-family:var(--hand);color:var(--chalk);overflow-x:hidden}
         <path d="M38 41.500c-4-2.500-6-4.200-6-6a3 3 0 0 1 6-.8 3 3 0 0 1 6 .8c0 1.800-2 3.500-6 6z" fill="#f2d9b8" opacity=".9" transform="translate(0 -1.200) scale(1 .62) translate(0 22)"/>
       </svg>
 
-      <button class="cat-btn cat-grey" id="no" type="button" aria-label="Não">
+      <button class="cat-btn cat-tux" id="no" type="button" aria-label="Não">
         <span class="cat-art" data-cat></span>
         <span class="zzz" aria-hidden="true">z z</span>
         <span class="tag">Não</span>
@@ -238,7 +240,7 @@ body{margin:0;font-family:var(--hand);color:var(--chalk);overflow-x:hidden}
           <a class="btn" id="enter" hidden href="https://bia-ivory.vercel.app/">Entrar no café</a>
         </form>
       </div>
-      <div class="peek cat-orange" id="peek"><span class="cat-art" data-cat></span></div>
+      <div class="peek cat-snow" id="peek"><span class="cat-art" data-cat></span></div>
     </div>
   </div>
 
@@ -255,7 +257,7 @@ body{margin:0;font-family:var(--hand);color:var(--chalk);overflow-x:hidden}
 const CONFIG = {
   nomeCafe: "Café da Bia",
   linkJogo: "https://bia-ivory.vercel.app/",
-  dia: 25, mes: 10,                       
+  dia: 25, mes: 8,                                   // a data certa: 25/08 (ano é opcional na hora de digitar)
   perguntaInicial: "Você conseguirá chegar até seu presente?",
   perguntaData: "Qual a data mais especial?",
   quandoNao: [
@@ -272,43 +274,62 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const q = $('#q'), sub = $('#sub');
 
 /* ---------- gato (SVG) ---------- */
-function catSVG() {
+function catSVG(kind) {
+  const tux = kind === 'tux';
+  const ears = tux
+    ? `<g class="ear-l"><path class="ear-out rim" d="M50 86L37 12Q39 6 46 9L99 50Z"/><path class="ear-in" d="M57 72L48 32L81 53Z"/></g>
+  <g class="ear-r"><path class="ear-out rim" d="M150 86L163 12Q161 6 154 9L101 50Z"/><path class="ear-in" d="M143 72L152 32L119 53Z"/></g>`
+    : `<g class="ear-l"><path class="ear-out" d="M46 86L38 22Q39 15 46 18L98 52Z"/><path class="ear-in" d="M56 72L51 37L82 56Z"/></g>
+  <g class="ear-r"><path class="ear-out" d="M154 86L162 22Q161 15 154 18L102 52Z"/><path class="ear-in" d="M144 72L149 37L118 56Z"/></g>`;
+  const legs = tux ? 'body' : 'white';
+  const hips = tux ? '' : '<ellipse cx="64" cy="203" rx="13" ry="13" fill="#2c1a14"/><ellipse cx="136" cy="203" rx="13" ry="13" fill="#2c1a14"/>';
+  const faceMarks = tux
+    ? `<path class="white" d="M100 62C97 74 96 90 91 101C80 108 71 114 73 125C78 138 122 138 127 125C129 114 120 108 109 101C104 90 103 74 100 62Z"/>
+  <ellipse class="white" cx="100" cy="122" rx="30" ry="17"/>`
+    : `<path class="mask" d="M43 96C42 66 66 50 100 50C134 50 158 66 157 96C150 82 126 80 100 80C74 80 50 82 43 96Z"/>
+  <ellipse class="mask" cx="72" cy="98" rx="26" ry="21" transform="rotate(-12 72 98)"/>
+  <ellipse class="mask" cx="128" cy="98" rx="26" ry="21" transform="rotate(12 128 98)"/>
+  <path class="white" d="M100 57C96 70 92 86 81 103C74 113 71 121 77 128C87 140 113 140 123 128C129 121 126 113 119 103C108 86 104 70 100 57Z"/>
+  <ellipse class="white" cx="100" cy="123" rx="31" ry="18"/>`;
+  const eyes = tux
+    ? `<circle cx="74" cy="100" r="12" fill="#15131a"/><circle class="iris" cx="74" cy="100" r="10.5"/><ellipse class="eye" cx="74" cy="100" rx="3.2" ry="9"/><circle cx="77.5" cy="96" r="2.8" fill="#fff"/>
+    <circle cx="126" cy="100" r="12" fill="#15131a"/><circle class="iris" cx="126" cy="100" r="10.5"/><ellipse class="eye" cx="126" cy="100" rx="3.2" ry="9"/><circle cx="129.5" cy="96" r="2.8" fill="#fff"/>`
+    : `<circle cx="74" cy="100" r="12" fill="var(--mask)"/><circle class="iris" cx="74" cy="100" r="9.5"/><circle class="eye" cx="74" cy="100" r="5.5"/><circle cx="77.5" cy="96.5" r="3.2" fill="#fff"/><circle cx="71.5" cy="103.5" r="1.5" fill="#fff" opacity=".85"/>
+    <circle cx="126" cy="100" r="12" fill="var(--mask)"/><circle class="iris" cx="126" cy="100" r="9.5"/><circle class="eye" cx="126" cy="100" r="5.5"/><circle cx="129.5" cy="96.5" r="3.2" fill="#fff"/><circle cx="123.5" cy="103.5" r="1.5" fill="#fff" opacity=".85"/>`;
+  const whisk = tux
+    ? 'M54 114L14 104M54 120L10 122M56 126L18 138M146 114L186 104M146 120L190 122M144 126L182 138'
+    : 'M54 114L28 108M54 120L26 122M56 126L32 134M146 114L172 108M146 120L174 122M144 126L168 134';
   return `<svg class="cat mood-open" viewBox="0 0 200 230" aria-hidden="true">
   <ellipse cx="100" cy="224" rx="66" ry="7" fill="rgba(20,8,14,.30)"/>
-  <g class="tail"><path class="tailp" d="M148 204C192 208 200 150 170 136" stroke-width="20" stroke-linecap="round"/><path class="stripe" d="M186 178q7-4 11-11"/></g>
-  <g class="ear-l"><path class="fur" d="M46 84L44 26Q45 20 51 22L98 52Z"/><path class="inear" d="M55 70L54 38L82 55Z"/></g>
-  <g class="ear-r"><path class="fur" d="M154 84L156 26Q155 20 149 22L102 52Z"/><path class="inear" d="M145 70L146 38L118 55Z"/></g>
-  <path class="fur" d="M100 112C56 112 40 168 46 200C50 224 150 224 154 200C160 168 144 112 100 112Z"/>
-  <ellipse class="belly" cx="100" cy="184" rx="31" ry="32"/>
-  <path class="stripe" d="M47 168h12M48 182h10M153 168h-12M152 182h-10"/>
-  <rect class="fur" x="65" y="150" width="24" height="60" rx="11"/>
-  <rect class="fur" x="111" y="150" width="24" height="60" rx="11"/>
+  <g class="tail"><path class="tailp" d="M148 204C192 208 200 150 170 136" stroke-width="20" stroke-linecap="round"/></g>
+  ${ears}
+  <path class="body rim" d="M100 112C56 112 40 168 46 200C50 224 150 224 154 200C160 168 144 112 100 112Z"/>
+  ${hips}
+  <ellipse class="white" cx="100" cy="172" rx="33" ry="42"/>
+  <rect class="${legs}" x="65" y="150" width="24" height="60" rx="11"/>
+  <rect class="${legs}" x="111" y="150" width="24" height="60" rx="11"/>
   <path class="seam" d="M89 162V200M111 162V200"/>
-  <ellipse class="paw" cx="77" cy="212" rx="17" ry="10.500"/>
-  <ellipse class="paw" cx="123" cy="212" rx="17" ry="10.500"/>
-  <path class="seam" d="M71 209v7M77 208v8M83 209v7M117 209v7M123 208v8M129 209v7"/>
-  <ellipse class="fur" cx="45" cy="108" rx="11" ry="9"/>
-  <ellipse class="fur" cx="155" cy="108" rx="11" ry="9"/>
-  <ellipse class="fur" cx="100" cy="98" rx="60" ry="50"/>
-  <ellipse class="belly" cx="100" cy="117" rx="24" ry="16"/>
-  <path class="stripe" d="M100 50V66M86 53L90 66M114 53L110 66M42 98h12M44 109h10M158 98h-12M156 109h-10"/>
-  <g class="e-open">
-    <circle class="eye" cx="74" cy="100" r="10"/><circle cx="77.500" cy="96.500" r="3.600" fill="#fff"/><circle cx="71" cy="104" r="1.700" fill="#fff" opacity=".9"/>
-    <circle class="eye" cx="126" cy="100" r="10"/><circle cx="129.500" cy="96.500" r="3.600" fill="#fff"/><circle cx="123" cy="104" r="1.700" fill="#fff" opacity=".9"/>
-  </g>
+  <ellipse class="white" cx="77" cy="212" rx="17" ry="10.5"/>
+  <ellipse class="white" cx="123" cy="212" rx="17" ry="10.5"/>
+  <path class="toes" d="M71 209v7M77 208v8M83 209v7M117 209v7M123 208v8M129 209v7"/>
+  <ellipse class="head rim" cx="45" cy="108" rx="11" ry="9"/>
+  <ellipse class="head rim" cx="155" cy="108" rx="11" ry="9"/>
+  <ellipse class="head rim" cx="100" cy="98" rx="60" ry="50"/>
+  ${faceMarks}
+  <ellipse cx="74" cy="124" rx="8" ry="5" fill="#ff8fa3" opacity=".35"/>
+  <ellipse cx="126" cy="124" rx="8" ry="5" fill="#ff8fa3" opacity=".35"/>
+  <g class="e-open">${eyes}</g>
   <g class="e-happy"><path class="line" d="M64 103Q74 90 84 103M116 103Q126 90 136 103"/></g>
   <g class="e-sleep"><path class="line" d="M64 98Q74 109 84 98M116 98Q126 109 136 98"/></g>
   <g class="e-squint"><path class="line" d="M64 91L84 100L64 109M136 91L116 100L136 109"/></g>
-  <path d="M94 110Q100 106.500 106 110Q100 118 94 110Z" fill="#f08aa0"/>
-  <path class="line" stroke-width="2.600" d="M100 117Q95 124 88 119M100 117Q105 124 112 119"/>
-  <g class="whisk"><path d="M54 114L28 108M54 120L26 122M56 126L32 134M146 114L172 108M146 120L174 122M144 126L168 134"/></g>
-  <ellipse cx="58" cy="119" rx="9" ry="5.500" fill="#ff8fa3" opacity=".5"/>
-  <ellipse cx="142" cy="119" rx="9" ry="5.500" fill="#ff8fa3" opacity=".5"/>
+  <path d="M94 110Q100 106.5 106 110Q100 118 94 110Z" fill="#f2a0b0"/>
+  <path class="mouth" d="M100 117Q95 124 88 119M100 117Q105 124 112 119"/>
+  <g class="whisk"><path d="${whisk}"/></g>
   <path d="M64 140Q100 162 136 140" fill="none" stroke="var(--collar)" stroke-width="9" stroke-linecap="round"/>
-  <circle cx="100" cy="160" r="7.500" fill="#ffd25e"/><path d="M94.500 160h11" stroke="#c99a2e" stroke-width="1.600"/><circle cx="97.500" cy="157.500" r="2" fill="#fff" opacity=".7"/>
+  <circle cx="100" cy="160" r="7.5" fill="#ffd25e"/><path d="M94.5 160h11" stroke="#c99a2e" stroke-width="1.6"/><circle cx="97.5" cy="157.5" r="2" fill="#fff" opacity=".7"/>
 </svg>`;
 }
-document.querySelectorAll('[data-cat]').forEach(el => { el.innerHTML = catSVG(); });
+document.querySelectorAll('[data-cat]').forEach(el => { el.innerHTML = catSVG(el.closest('.cat-tux') ? 'tux' : 'snow'); });
 const setMood = (cat, mood) => { const s = cat.querySelector('.cat'); s.classList.remove('mood-open', 'mood-happy', 'mood-sleep', 'mood-squint'); s.classList.add('mood-' + mood); };
 
 /* ---------- giz: apagar e escrever ---------- */
